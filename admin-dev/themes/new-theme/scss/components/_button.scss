@@ -1,0 +1,11 @@
+.btn {
+  white-space: normal;
+
+  &.btn-action {
+    @include ps-button-outline-variant(var(--#{$cdk}primary-500), var(--#{$cdk}primary-800), "secondary");
+  }
+}
+
+a.btn.auto-pointer-events {
+  pointer-events: auto;
+}

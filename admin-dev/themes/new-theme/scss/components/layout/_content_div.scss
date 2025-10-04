@@ -1,0 +1,94 @@
+.content-div {
+  padding: var(--#{$cdk}size-16) var(--#{$cdk}size-16) var(--#{$cdk}size-16) calc(var(--#{$cdk}sidebar-width) + var(--#{$cdk}size-16));
+  transition: padding var(--#{$cdk}default-transition-duration);
+
+  // Links
+  a {
+    &[href] {
+      // Exclude classes that don't need underline
+      &:not(
+      .breadcrumb a,
+      .dropdown-menu a,
+      table a,
+      [class*="btn"],
+      [class*="dropdown"],
+      [class*="list-group-item"],
+      [class*="kpi-container"],
+      [class*="nav-link"]) {
+        text-decoration: underline;
+        text-underline-offset: var(--#{$cdk}size-2);
+        transition: var(--#{$cdk}default-transition);
+
+        &:hover {
+          text-underline-offset: var(--#{$cdk}size-4);
+        }
+      }
+    }
+  }
+
+  @include media-breakpoint-down(md) {
+    padding-inline: var(--#{$cdk}size-16);
+
+    .container {
+      padding: 0;
+    }
+  }
+
+  &.-notoolbar {
+    padding-top: 0;
+
+    .header-toolbar {
+      display: none;
+    }
+  }
+
+  @at-root .multishop-enabled & {
+    &.-notoolbar {
+      .header-toolbar {
+        display: block;
+        padding-left: 0;
+        margin: 0 calc(-1 * var(--#{$cdk}size-16));
+        border-bottom: none;
+      }
+    }
+  }
+  @at-root .multishop-enabled.mobile & {
+    &.-notoolbar {
+      .header-toolbar {
+        margin: 0;
+      }
+    }
+  }
+}
+
+#main-div {
+  padding-top: var(--#{$cdk}header-height);
+
+  &.light_display_layout {
+    padding-top: 0;
+  }
+}
+
+.light_display_layout {
+  #main-div {
+    padding-top: var(--#{$cdk}size-10);
+  }
+}
+
+.page-sidebar-closed:not(.mobile) {
+  .content-div {
+    padding-left: calc(var(--#{$cdk}sidebar-width-collapse) + var(--#{$cdk}size-16));
+
+    &.-notoolbar {
+      .header-toolbar {
+        padding-left: 0;
+      }
+    }
+  }
+}
+
+.mobile {
+  .content-div {
+    padding-bottom: var(--#{$cdk}size-80);
+  }
+}

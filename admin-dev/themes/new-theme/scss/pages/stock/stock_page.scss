@@ -1,0 +1,330 @@
+// Config
+/* stylelint-disable */
+@import "@scss/config/_settings";
+@import "@scss/config/_keyframes";
+@import "@scss/config/_bootstrap";
+/* stylelint-enable */
+
+.header-toolbar {
+  display: none;
+
+  @at-root .multishop-enabled & {
+    display: block;
+    border-bottom: none;
+  }
+}
+
+.content-div {
+  > #content-message-box,
+  > #ajax_confirmation {
+    display: none;
+  }
+}
+
+.adminstockmanagement .stock-app {
+  padding: 0;
+
+  .header-toolbar {
+    z-index: 989;
+    display: block;
+    padding-right: 0;
+    padding-left: 0;
+    margin: calc(-1 * var(--#{$cdk}size-16));
+    margin-top: calc(-1 * var(--#{$cdk}size-16));
+    margin-bottom: var(--#{$cdk}size-16);
+    border-bottom: 1px solid var(--#{$cdk}primary-400);
+
+    @at-root .multishop-enabled {
+      &.adminstockmanagement .stock-app {
+        .header-toolbar {
+          top: calc(var(--#{$cdk}header-height) + var(--#{$cdk}multishop-bar-height));
+        }
+      }
+    }
+  }
+
+  .table {
+    td:first-child {
+      // product description inside the product column
+      p {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  #search {
+    .search-input {
+      min-height: var(--#{$cdk}size-36);
+      background-color: var(--#{$cdk}white);
+      border: 1px solid var(--#{$cdk}primary-400);
+      outline: none;
+      box-shadow: none;
+    }
+
+    .alert-box {
+      position: fixed;
+      top: var(--#{$cdk}size-64);
+      right: var(--#{$cdk}size-5);
+      z-index: 1000; // above header toolbar
+      padding-top: var(--#{$cdk}size-28);
+    }
+
+    .fade-enter-active,
+    .fade-leave-active {
+      transition: var(--#{$cdk}default-transition);
+    }
+
+    .fade-enter,
+    .fade-leave-to {
+      opacity: 0;
+    }
+  }
+
+  #filters-container {
+    .collapse-button {
+      width: 100%;
+      text-align: left;
+
+      .material-icons {
+        font-size: var(--#{$cdk}size-20);
+        color: var(--#{$cdk}primary-500);
+        vertical-align: bottom;
+      }
+    }
+
+    .filter-container {
+      padding: var(--#{$cdk}size-10);
+      border: 1px solid var(--#{$cdk}primary-400);
+
+      &.filter-suppliers {
+        .item {
+          margin-bottom: var(--#{$cdk}size-5);
+        }
+
+        ul {
+          padding-left: 0;
+          margin-bottom: 0;
+          list-style: none;
+        }
+      }
+    }
+  }
+
+  .low-filter-label {
+    cursor: pointer;
+  }
+
+  #filters {
+    width: 100%;
+    background: var(--#{$cdk}white);
+    border: solid 1px var(--#{$cdk}primary-400);
+
+    .row {
+      padding: var(--#{$cdk}size-10);
+    }
+  }
+
+  // form that allows changing stock quantities
+  form.qty {
+    position: relative;
+    display: inline-block;
+    width: 7rem;
+
+    &:hover,
+    &.active {
+      input[type="number"] {
+        // we need this offset to make room for the confirmation button
+        padding-right: 34px;
+      }
+
+      .ps-number-spinner {
+        right: 34px;
+      }
+    }
+
+    .check-button {
+      position: absolute;
+      top: 1px;
+      right: 1px;
+      z-index: 2;
+      width: 33px;
+      height: calc(100% - 2px);
+      padding: 0;
+      cursor: pointer;
+      background: $brand-primary;
+      border: none;
+      outline: none;
+      opacity: 0;
+
+      .material-icons {
+        color: $white;
+        vertical-align: middle;
+      }
+
+      &:hover {
+        background: $primary-hover;
+      }
+    }
+
+    &.active {
+      .check-button {
+        cursor: pointer;
+        opacity: 1;
+      }
+    }
+
+    &.disabled {
+      .check-button {
+        cursor: default;
+        background: $gray-light;
+      }
+    }
+  }
+
+  .pagination {
+    justify-content: center;
+  }
+
+  .stock-movements {
+    .qty-number {
+      display: inline-block;
+      min-width: 50px;
+      padding: 2px 5px;
+      color: $white;
+      background-color: var(--#{$cdk}yellow-500);
+      @include border-radius(4px);
+
+      &.is-positive {
+        background-color: var(--#{$cdk}green-500);
+      }
+    }
+  }
+
+  .stock-overview {
+    .table {
+      table-layout: fixed;
+
+      @include media-breakpoint-down(sm) {
+        table-layout: unset;
+      }
+
+      thead {
+        th {
+          &.product-title {
+            padding-left: 6rem;
+          }
+
+          &:last-child {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+
+            .material-icons {
+              margin-right: 5px;
+            }
+          }
+        }
+      }
+
+      .qty-update {
+        color: var(--#{$cdk}blue-300);
+
+        .material-icons {
+          vertical-align: middle;
+        }
+      }
+
+      .enable {
+        color: $success;
+      }
+
+      .disable {
+        color: $danger;
+      }
+
+      .low-stock {
+        background: var(--#{$cdk}red-50);
+
+        .stock-warning {
+          font-weight: 700;
+          color: $danger;
+
+          &.ico {
+            padding: 0 5px;
+            cursor: pointer;
+            background: lighten($danger, 30%);
+            border: 1px solid $danger;
+          }
+        }
+      }
+    }
+
+    .product-actions {
+      small {
+        display: block;
+      }
+
+      .bulk-qty {
+        max-width: 100px;
+
+        @include media-breakpoint-down(sm) {
+          max-width: 60px;
+        }
+      }
+
+      .update-qty {
+        color: $white;
+        @include transition(background-color 0.2s ease);
+      }
+
+      .qty {
+        padding-left: 20px;
+      }
+
+
+      @include media-breakpoint-down(sm) {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        > div {
+          width: 55%;
+
+          .update-qty {
+            display: flex;
+            align-items: center;
+            max-width: 90%;
+            // stylelint-disable-next-line
+            margin-right: 0 !important;
+            white-space: inherit;
+          }
+
+          &:first-of-type {
+            width: 45%;
+          }
+
+          &:last-of-type {
+            display: flex;
+            justify-content: center;
+          }
+        }
+      }
+    }
+  }
+
+  .content-topbar {
+    @include media-breakpoint-down(sm) {
+      padding: 0;
+      margin-bottom: 0.5rem;
+
+      &-right {
+        // stylelint-disable-next-line
+        display: none !important;
+      }
+    }
+  }
+}
+
+.adminstockmanagement > .header-toolbar .container-fluid {
+  display: none;
+}

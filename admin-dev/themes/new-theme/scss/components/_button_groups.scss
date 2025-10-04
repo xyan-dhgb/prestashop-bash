@@ -1,0 +1,16 @@
+@import "../config/settings";
+
+.dropdown-toggle {
+  &.dropdown-toggle-dots {
+    &::after {
+      color: var(--#{$cdk}primary-800);
+      content: "more_vert";
+    }
+
+    &:hover {
+      &::after {
+        color: var(--#{$cdk}primary-700);
+      }
+    }
+  }
+}

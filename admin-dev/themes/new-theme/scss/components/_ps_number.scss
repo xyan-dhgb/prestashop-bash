@@ -1,0 +1,75 @@
+.ps-number {
+  position: relative;
+  display: inline-block;
+
+  /* Chrome, Safari, Edge, Opera */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    margin: 0;
+    appearance: none;
+  }
+
+  /* Firefox */
+  input[type="number"] {
+    appearance: textfield;
+  }
+
+  .danger {
+    color: $gray-dark;
+    background-color: $white;
+    border: 1px solid $danger;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .ps-number-spinner {
+    position: absolute;
+    top: 1px;
+    right: 0;
+    bottom: 1px;
+    flex-direction: column;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  &.hover-buttons {
+    .ps-number-spinner {
+      display: none;
+      opacity: 0;
+    }
+
+    &:hover .ps-number-spinner {
+      display: inline-block;
+      opacity: 1;
+    }
+  }
+
+  .ps-number-up,
+  .ps-number-down {
+    height: 50%;
+  }
+
+  .ps-number-up::before {
+    position: relative;
+    display: block;
+    height: 100%;
+    font-family: var(--#{$cdk}font-family-material-icons);
+    font-size: var(--#{$cdk}size-20);
+    line-height: 100%;
+    color: $gray-dark;
+    content: "\E5C7";
+  }
+
+  .ps-number-down::before {
+    position: relative;
+    display: block;
+    height: 100%;
+    font-family: var(--#{$cdk}font-family-material-icons);
+    font-size: var(--#{$cdk}size-20);
+    line-height: 100%;
+    color: $gray-dark;
+    content: "\E5C5";
+  }
+}

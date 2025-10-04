@@ -1,0 +1,142 @@
+ul.category-tree {
+  padding: 0;
+  margin: 0;
+
+  .less,
+  .more {
+    position: relative;
+    background: none;
+
+    > .checkbox,
+    > .radio {
+      cursor: pointer;
+
+      &::before {
+        position: absolute;
+        top: calc(-1 * var(--#{$cdk}size-4));
+        left: calc(-1 * var(--#{$cdk}size-2));
+        font-family: var(--#{$cdk}font-family-material-icons);
+        font-size: var(--#{$cdk}size-20);
+        color: var(--#{$cdk}primary-500);
+        cursor: pointer;
+      }
+    }
+  }
+
+  .less {
+    > .checkbox,
+    > .radio {
+      &::before {
+        content: "\E313";
+      }
+    }
+  }
+
+  .more {
+    > .checkbox,
+    > .radio {
+      &::before {
+        content: "\E5CC";
+      }
+    }
+  }
+
+  .category-label {
+    position: relative;
+    display: block;
+    padding-right: var(--#{$cdk}size-24);
+
+    .form-check-label {
+      position: absolute;
+      top: 0;
+      right: 0.4em;
+      width: var(--#{$cdk}size-20);
+      height: var(--#{$cdk}size-20);
+      cursor: pointer;
+    }
+
+    .category {
+      position: absolute;
+      top: 0.4em; // relative to the current font size, so "em" and not "rem"
+      right: 0.4em;
+      cursor: pointer;
+    }
+  }
+
+  ul {
+    padding-left: var(--#{$cdk}size-24);
+  }
+
+  li {
+    list-style: none;
+    background-repeat: no-repeat;
+    background-position: 0 var(--#{$cdk}size-4);
+    background-size: var(--#{$cdk}size-12) var(--#{$cdk}size-12);
+
+    .checkbox,
+    .radio {
+      padding-top: 0;
+      padding-left: var(--#{$cdk}size-20);
+    }
+  }
+}
+
+// category tree on the catalog page
+#tree-categories,
+.category-filter-menu {
+  padding: var(--#{$cdk}size-8);
+
+  .categories-tree-actions {
+    margin-bottom: var(--#{$cdk}size-16);
+    //white-space: nowrap; // prevent buttons from collapsing
+    border-bottom: 1px solid var(--#{$cdk}primary-400);
+
+    > a {
+      display: inline-block;
+
+      margin-bottom: var(--#{$cdk}size-8);
+      color: var(--#{$cdk}primary-600);
+
+      + a {
+        margin-left: var(--#{$cdk}size-16);
+      }
+
+      &:hover {
+        text-decoration: none;
+      }
+
+      i.material-icons {
+        font-size: var(--#{$cdk}size-20);
+        vertical-align: bottom;
+      }
+    }
+
+    > button {
+      display: inline-block;
+      padding: var(--#{$cdk}size-4);
+      margin-bottom: var(--#{$cdk}size-8);
+      color: var(--#{$cdk}primary-600);
+
+      &:hover {
+        color: var(--#{$cdk}primary-800);
+      }
+    }
+  }
+
+  label.form-control-label {
+    width: 100%;
+    padding-right: var(--#{$cdk}size-16);
+    padding-left: var(--#{$cdk}size-16);
+    color: var(--#{$cdk}primary-400);
+  }
+
+  #choice_tree {
+    .category-tree {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.category-filter-menu {
+  min-width: 360px;
+}

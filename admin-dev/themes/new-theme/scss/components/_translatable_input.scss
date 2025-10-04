@@ -1,0 +1,27 @@
+.locale-input-group {
+  .js-locale-input {
+    .form-control {
+      min-height: 42px;
+    }
+  }
+
+  .dropdown {
+    margin-left: 0.625em;
+
+    button.dropdown-toggle {
+      border-color: $gray-light;
+    }
+
+    .dropdown-menu {
+      min-width: auto;
+
+      .dropdown-item {
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+.translations.tabbable {
+  @include border-radius(4px);
+}

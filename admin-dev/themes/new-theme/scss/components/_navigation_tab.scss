@@ -1,0 +1,34 @@
+// This stylesheet is related with the NavigationTabType form type component.
+
+.navigation-tab-widget {
+  .tabs {
+    position: relative;
+
+    .navigation-tab-widget-toolbar {
+      position: absolute;
+      top: 3px;
+      right: 3px;
+
+      button,
+      a {
+        padding: 0;
+        margin: 0 0.156rem;
+      }
+    }
+
+    .form-group {
+      margin-bottom: 0;
+    }
+  }
+
+  &-footer {
+    padding: var(--#{$cdk}size-24) var(--#{$cdk}size-32);
+    background-color: var(--#{$cdk}white);
+    border: 1px solid var(--#{$cdk}primary-400);
+    border-block-start: none;
+
+    .form-group {
+      margin-bottom: 0;
+    }
+  }
+}

@@ -1,0 +1,224 @@
+import testContext from '@utils/testContext';
+import {expect} from 'chai';
+
+// Import commonTests
+import {createCustomerTest, deleteCustomerTest} from '@commonTests/BO/customers/customer';
+
+import {
+  boCustomersViewPage,
+  boDashboardPage,
+  boLoginPage,
+  boOrdersPage,
+  boOrdersCreatePage,
+  type BrowserContext,
+  dataCustomers,
+  FakerCustomer,
+  type Frame,
+  type Page,
+  utilsPlaywright,
+} from '@prestashop-core/ui-testing';
+
+const baseContext: string = 'functional_BO_orders_orders_createOrders_searchViewCustomer';
+
+/*
+Pre-condition:
+- Create disabled customer
+- Create customer with lastName 'DOE'
+Scenario:
+- Search for non existent customer and check error message
+- Search for disabled customer and check error message
+- Search for customers with lastName 'DOE' and check result number
+- Check displayed customer card then click on choose
+- Click on details button and check customer details
+Pre-condition:
+- Delete created customers
+ */
+describe('BO - Orders - Create order : Search and view customer details from new order page', async () => {
+  let browserContext: BrowserContext;
+  let page: Page;
+  let customerIframe: Frame|null;
+
+  const nonExistentCustomer: FakerCustomer = new FakerCustomer();
+  const disabledCustomer: FakerCustomer = new FakerCustomer({enabled: false});
+  const newCustomer: FakerCustomer = new FakerCustomer({
+    firstName: 'Jane',
+    lastName: 'DOE',
+    defaultCustomerGroup: 'Customer',
+    enabled: true,
+  });
+
+  // Pre-condition: Create disabled customer
+  createCustomerTest(disabledCustomer, `${baseContext}_preTest_1`);
+
+  // Pre-condition: Create new customer
+  createCustomerTest(newCustomer, `${baseContext}_preTest_2`);
+
+  before(async function () {
+    browserContext = await utilsPlaywright.createBrowserContext(this.browser);
+    page = await utilsPlaywright.newTab(browserContext);
+  });
+
+  after(async () => {
+    await utilsPlaywright.closeBrowserContext(browserContext);
+  });
+
+  // 1 - Search for customers
+  describe('Search for customers', () => {
+    it('should login in BO', async function () {
+      await testContext.addContextItem(this, 'testIdentifier', 'loginBO', baseContext);
+
+      await boLoginPage.goTo(page, global.BO.URL);
+      await boLoginPage.successLogin(page, global.BO.EMAIL, global.BO.PASSWD);
+
+      const pageTitle = await boDashboardPage.getPageTitle(page);
+      expect(pageTitle).to.contains(boDashboardPage.pageTitle);
+    });
+
+    it('should go to \'Orders > Orders\' page', async function () {
+      await testContext.addContextItem(this, 'testIdentifier', 'goToOrdersPage', baseContext);
+
+      await boDashboardPage.goToSubMenu(
+        page,
+        boDashboardPage.ordersParentLink,
+        boDashboardPage.ordersLink,
+      );
+
+      const pageTitle = await boOrdersPage.getPageTitle(page);
+      expect(pageTitle).to.contains(boOrdersPage.pageTitle);
+    });
+
+    it('should go to create order page', async function () {
+      await testContext.addContextItem(this, 'testIdentifier', 'goToCreateOrderPage', baseContext);
+
+      await boOrdersPage.goToCreateOrderPage(page);
+
+      const pageTitle = await boOrdersCreatePage.getPageTitle(page);
+      expect(pageTitle).to.contains(boOrdersCreatePage.pageTitle);
+    });
+
+    [
+      {
+        testIdentifier: 'checkNonExistentCustomerError',
+        customerType: 'non existent',
+        customer: nonExistentCustomer,
+      },
+      {
+        testIdentifier: 'checkDisabledCustomerError',
+        customerType: 'disabled',
+        customer: disabledCustomer,
+      },
+    ].forEach((step) => {
+      it(`should search for ${step.customerType} customer and check error message`, async function () {
+        await testContext.addContextItem(this, 'testIdentifier', step.testIdentifier, baseContext);
+
+        await boOrdersCreatePage.searchCustomer(page, step.customer.email);
+
+        const errorDisplayed = await boOrdersCreatePage.getNoCustomerFoundError(page);
+        expect(errorDisplayed, 'Error is not correct').to.equal(boOrdersCreatePage.noCustomerFoundText);
+      });
+    });
+
+    it('should search for the customer with lastName \'Doe\' and check result number', async function () {
+      await testContext.addContextItem(this, 'testIdentifier', 'checkExistentCustomerCard', baseContext);
+
+      await boOrdersCreatePage.searchCustomer(page, dataCustomers.johnDoe.lastName);
+
+      const searchResultNumber = await boOrdersCreatePage.getCustomersSearchNumber(page);
+      expect(searchResultNumber).to.be.equal(2);
+    });
+
+    it('should check that first customer card contain \'Name, Email, birthdate and groups\'', async function () {
+      await testContext.addContextItem(this, 'testIdentifier', 'checkFirstSearchResult', baseContext);
+
+      const defaultCustomerName = await boOrdersCreatePage.getCustomerNameFromResult(page, 1);
+      expect(defaultCustomerName).to.contains(
+        `${dataCustomers.johnDoe.firstName} ${dataCustomers.johnDoe.lastName}`,
+      );
+
+      const customerCardContent = await boOrdersCreatePage.getCustomerCardBody(page, 1);
+      expect(customerCardContent)
+        .to.contains(dataCustomers.johnDoe.email)
+        .and.to.contains(dataCustomers.johnDoe.birthDate.toJSON().slice(0, 10))
+        .and.to.contains(dataCustomers.johnDoe.defaultCustomerGroup);
+    });
+
+    it('should check that second customer card contain \'Name, Email, birthdate and groups\'', async function () {
+      await testContext.addContextItem(this, 'testIdentifier', 'checkSecondSearchResult', baseContext);
+
+      const newCustomerName = await boOrdersCreatePage.getCustomerNameFromResult(page, 2);
+      expect(newCustomerName).to.contains(`${newCustomer.firstName} ${newCustomer.lastName}`);
+
+      const customerCardContent = await boOrdersCreatePage.getCustomerCardBody(page, 2);
+      expect(customerCardContent)
+        .to.contains(newCustomer.email)
+        .and.to.contains(`${newCustomer.yearOfBirth}-${newCustomer.monthOfBirth}-${newCustomer.dayOfBirth}`)
+        .and.to.contains(newCustomer.defaultCustomerGroup);
+    });
+
+    it(
+      `should choose customer ${dataCustomers.johnDoe.firstName} ${dataCustomers.johnDoe.lastName}`,
+      async function () {
+        await testContext.addContextItem(this, 'testIdentifier', 'chooseDefaultCustomer', baseContext);
+
+        await boOrdersCreatePage.searchCustomer(page, dataCustomers.johnDoe.email);
+
+        const isCartsTableVisible = await boOrdersCreatePage.chooseCustomer(page);
+        expect(isCartsTableVisible).to.eq(true);
+      },
+    );
+  });
+
+  // 2 - View customer details
+  describe('View customer details', async () => {
+    it('should click on \'Details\' button from customer card', async function () {
+      await testContext.addContextItem(this, 'testIdentifier', 'clickOnDetailButton', baseContext);
+
+      const isIframeVisible = await boOrdersCreatePage.clickOnDetailsButton(page);
+      expect(isIframeVisible).to.eq(true);
+    });
+
+    it('should check the existence of personal information block in the iframe', async function () {
+      await testContext.addContextItem(this, 'testIdentifier', 'checkPersonalInformation', baseContext);
+
+      customerIframe = boOrdersCreatePage.getCustomerIframe(page, dataCustomers.johnDoe.id);
+      expect(customerIframe).to.not.eq(null);
+
+      const cardHeaderText = await boCustomersViewPage.getPersonalInformationTitle(customerIframe!);
+      expect(cardHeaderText).to.contains(dataCustomers.johnDoe.firstName);
+      expect(cardHeaderText).to.contains(dataCustomers.johnDoe.lastName);
+      expect(cardHeaderText).to.contains(dataCustomers.johnDoe.email);
+    });
+
+    [
+      {args: {blockName: 'Orders', number: 5}},
+      {args: {blockName: 'Carts', number: 6}},
+      {args: {blockName: 'Purchased products', number: 6}},
+      {args: {blockName: 'Messages', number: 0}},
+      {args: {blockName: 'Vouchers', number: 0}},
+      {args: {blockName: 'Last emails', number: 0}},
+      {args: {blockName: 'Last connections', number: 0}},
+      {args: {blockName: 'Groups', number: 1}},
+      {args: {blockName: 'Addresses', number: 2}},
+    ].forEach((test) => {
+      it(`should check the ${test.args.blockName} number`, async function () {
+        await testContext.addContextItem(this, 'testIdentifier', `check${test.args.blockName}Number`, baseContext);
+
+        const cardHeaderText = await boCustomersViewPage.getNumberOfElementFromTitle(customerIframe!, test.args.blockName);
+        expect(parseInt(cardHeaderText, 10)).to.be.at.least(test.args.number);
+      });
+    });
+
+    it('should check the existence of add private note block', async function () {
+      await testContext.addContextItem(this, 'testIdentifier', 'checkAddPrivateNote', baseContext);
+
+      const isVisible = await boCustomersViewPage.isPrivateNoteBlockVisible(customerIframe!);
+      expect(isVisible).to.eq(true);
+    });
+  });
+
+  // Post-condition: Delete disabled customer
+  deleteCustomerTest(disabledCustomer, `${baseContext}_postTest_1`);
+
+  // Post-condition: Delete created customer
+  deleteCustomerTest(newCustomer, `${baseContext}_postTest_2`);
+});

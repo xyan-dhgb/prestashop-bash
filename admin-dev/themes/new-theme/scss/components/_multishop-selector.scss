@@ -1,0 +1,98 @@
+// stylelint-disable-next-line
+$component-name: shop-selector;
+
+.#{$component-name} {
+  ul.#{$component-name}-group-list {
+    position: relative;
+    max-height: 500px;
+    padding: 0 var(--#{$cdk}size-16) 0 0;
+    margin-left: 0;
+    list-style-type: none;
+  }
+
+  &-group-item {
+    &.#{$component-name}-item {
+      justify-content: flex-start;
+      margin-bottom: var(--#{$cdk}size-16);
+      font-weight: 600;
+      color: var(--#{$cdk}primary-500);
+    }
+  }
+
+  &-item {
+    display: flex;
+    align-items: start;
+    justify-content: start;
+    width: 100%;
+
+    > .#{$component-name}-color-check .material-icons {
+      font-size: var(--#{$cdk}size-20);
+    }
+
+    .md-checkbox {
+      width: 100%;
+      cursor: pointer;
+
+      label {
+        width: 100%;
+        padding-left: var(--#{$cdk}size-24);
+
+        .md-checkbox-control::before,
+        .md-checkbox-control::after {
+          margin-top: var(--#{$cdk}size-10);
+        }
+      }
+    }
+
+    &-name {
+      display: flex;
+      align-items: start;
+      width: 100%;
+      padding: var(--#{$cdk}size-8);
+      font-weight: 600;
+      cursor: pointer;
+
+      .material-icons {
+        margin-left: auto;
+        font-size: var(--#{$cdk}size-24);
+        color: var(--#{$cdk}primary-800);
+        opacity: 0;
+      }
+
+      .shop-selector-status {
+        margin-right: 5px;
+        margin-left: auto;
+        color: var(--#{$cdk}primary-800);
+      }
+
+      &:hover {
+        background-color: $multishop-selector-selected-background;
+
+        .material-icons {
+          opacity: 1;
+        }
+      }
+    }
+
+    &.selected-shop {
+      .shop-selector-item-name {
+        background-color: $multishop-selector-selected-background;
+      }
+    }
+
+    &.disabled {
+      .shop-selector-item-name {
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  &-color {
+    display: block;
+    width: var(--#{$cdk}size-24);
+    min-width: var(--#{$cdk}size-24);
+    height: var(--#{$cdk}size-24);
+    margin-right: var(--#{$cdk}size-16);
+    background-color: $multishop-header-default-background;
+  }
+}

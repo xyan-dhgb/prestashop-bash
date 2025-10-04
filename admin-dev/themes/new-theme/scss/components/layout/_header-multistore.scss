@@ -1,0 +1,180 @@
+// stylelint-disable-next-line
+$component-name: header-multishop;
+
+.#{$component-name} {
+  position: relative;
+  z-index: 1000;
+
+  &-top-bar {
+    position: relative;
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: var(--#{$cdk}size-8) var(--#{$cdk}size-16);
+    background-color: $multishop-header-default-background;
+  }
+
+  &-allshops .#{$component-name}-top-bar {
+    background-color: var(--#{$cdk}blue-300);
+
+    .#{$component-name}-title {
+      color: var(--#{$cdk}white);
+    }
+  }
+
+  &-title {
+    margin: 0;
+    font-size: var(--#{$cdk}size-14);
+    font-weight: 600;
+    line-height: 1;
+    color: var(--#{$cdk}white);
+    text-align: center;
+  }
+
+  &-right {
+    position: absolute;
+    top: 50%;
+    right: 1rem;
+    z-index: 1002;
+    display: flex;
+    gap: var(--#{$cdk}size-16);
+    transform: translateY(-50%);
+
+    svg {
+      path {
+        // stylelint-disable-next-line
+        -webkit-mask: none !important;
+        // stylelint-disable-next-line
+        mask: none !important;
+      }
+    }
+
+    @include media-breakpoint-down(md) {
+      a {
+        font-size: 0;
+
+        i {
+          margin: 0;
+        }
+      }
+    }
+  }
+
+  &-dark {
+    .#{$component-name}-title,
+    .#{$component-name}-center,
+    .#{$component-name}-view-action {
+      font-weight: 600;
+      color: $multishop-header-default-color;
+
+      i {
+        color: var(--#{$cdk}primary-800);
+      }
+    }
+
+    .#{$component-name}-button {
+      background: var(--#{$cdk}white);
+    }
+
+    .#{$component-name}-center {
+      svg {
+        opacity: 0.8;
+      }
+    }
+
+    .#{$component-name}-view-action {
+      &:hover {
+        color: $multishop-header-default-color-hover;
+      }
+    }
+  }
+
+  &-view-action {
+    display: flex;
+    gap: var(--#{$cdk}size-4);
+    align-items: center;
+    justify-content: center;
+    font-size: var(--#{$cdk}size-12);
+    line-height: 1;
+    color: var(--#{$cdk}white);
+    transition: var(--#{$cdk}default-transition);
+
+    i {
+      font-size: var(--#{$cdk}size-20);
+      color: currentcolor;
+    }
+
+    &:hover {
+      color: var(--#{$cdk}white);
+      text-decoration: none;
+
+      i {
+        color: currentcolor;
+      }
+    }
+  }
+
+  &-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--#{$cdk}size-20);
+    height: var(--#{$cdk}size-20);
+    margin-left: var(--#{$cdk}size-12);
+    color: var(--#{$cdk}primary-800);
+    background-color: rgba(map-get($map: $cdk-common, $key: "white"), 0.5);
+    border: none;
+
+    i {
+      font-size: var(--#{$cdk}size-20);
+      line-height: 1;
+      transition: var(--#{$cdk}default-transition);
+    }
+
+    &:active,
+    &:focus {
+      outline: none;
+    }
+  }
+
+  &-center {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    cursor: pointer;
+    transition: var(--#{$cdk}default-transition);
+
+    &:hover {
+      opacity: 0.8;
+    }
+
+    &.active {
+      .#{$component-name}-button {
+        i {
+          transform: rotate(-180deg);
+        }
+      }
+    }
+
+    svg {
+      position: absolute;
+      right: calc(100% + var(--#{$cdk}size-12));
+      bottom: calc(-1 * var(--#{$cdk}size-8));
+
+      @include media-breakpoint-down(sm) {
+        display: none;
+      }
+    }
+  }
+
+  .product-shops-action {
+    svg {
+      width: var(--#{$cdk}size-18);
+      height: var(--#{$cdk}size-20);
+      margin-top: -3px;
+    }
+  }
+}

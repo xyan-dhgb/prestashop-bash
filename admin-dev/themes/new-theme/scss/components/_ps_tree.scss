@@ -1,0 +1,66 @@
+.ps-tree {
+  ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+    cursor: pointer;
+  }
+
+  .tree-header {
+    padding-bottom: var(--#{$cdk}size-8);
+    border-bottom: 1px solid var(--#{$cdk}primary-400);
+
+    button {
+      font-size: var(--#{$cdk}size-12);
+      font-weight: 600;
+      color: var(--#{$cdk}primary-600);
+
+      &:hover {
+        color: var(--#{$cdk}primary-800);
+      }
+    }
+  }
+}
+
+.ps-tree-items {
+  .tree-name {
+    align-items: center;
+
+    button {
+      &::before {
+        @extend .material-icons;
+        font-size: var(--#{$cdk}size-20);
+      }
+
+      &.open::before {
+        content: "keyboard_arrow_down";
+      }
+
+      &.closed::before {
+        content: "keyboard_arrow_right";
+      }
+    }
+  }
+
+  .tree {
+    padding: 0 0 0 var(--#{$cdk}size-20);
+
+    .tree-item {
+      margin: var(--#{$cdk}size-4) 0;
+      list-style-type: none;
+    }
+  }
+
+  .warning {
+    color: $danger;
+    background: none;
+  }
+
+  .hidden {
+    visibility: hidden;
+  }
+
+  .disable {
+    display: none;
+  }
+}

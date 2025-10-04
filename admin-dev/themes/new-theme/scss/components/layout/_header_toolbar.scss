@@ -1,0 +1,156 @@
+.header-toolbar {
+  // stylelint-disable-next-line
+  position: sticky;
+  top: var(--#{$cdk}header-height);
+  right: 0;
+  z-index: 990; // popup menus' z-index is 1000, so it has to be just below that
+  padding-left: var(--#{$cdk}sidebar-width);
+  background: var(--#{$cdk}white);
+  border-bottom: var(--#{$cdk}size-1) solid $color-separator;
+  transition: padding var(--#{$cdk}default-transition-duration);
+
+  .mobile & {
+    top: var(--#{$cdk}header-height);
+  }
+
+  @include media-breakpoint-down(md) {
+    padding-left: 0;
+  }
+
+  .container-fluid {
+    .title-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--#{$cdk}size-16);
+      align-items: center;
+      justify-content: space-between;
+
+      &::after {
+        content: none;
+      }
+
+      @include media-breakpoint-down(sm) {
+        padding-block: var(--#{$cdk}size-12);
+        margin-block: 0;
+      }
+    }
+  }
+
+  // page title
+  .title {
+    flex: 1;
+    padding: 0;
+    margin-bottom: 0;
+    font-size: var(--#{$cdk}size-32);
+    font-weight: 600;
+  }
+
+  .page-subtitle {
+    width: 100%;
+    padding: 0;
+    margin-bottom: 0;
+  }
+
+  // breadcrumb
+  nav {
+    @include media-breakpoint-down(sm) {
+      display: none;
+    }
+
+    > ol {
+      padding-left: 0;
+    }
+  }
+  // toolbar buttons
+  .toolbar-icons {
+    &:not(.toolbar-icons--persistent) {
+      @include media-breakpoint-down(sm) {
+        display: none;
+
+        > .wrapper {
+          .btn-help {
+            display: none;
+          }
+        }
+      }
+    }
+
+    > .wrapper {
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-end;
+
+      @include media-breakpoint-down(sm) {
+        justify-content: flex-start;
+
+        #recommended-modules-button {
+          display: none;
+        }
+      }
+
+      a + a {
+        margin-left: $grid-gutter-width / 2;
+      }
+    }
+  }
+
+  // bottom spacing for title & toolbar row
+  .title-row {
+    @include clearfix();
+    margin-bottom: var(--#{$cdk}size-16);
+  }
+
+  .btn-floating {
+    display: none;
+
+    &-menu {
+      max-width: calc(100vw - 2rem);
+    }
+
+    @include media-breakpoint-down(sm) {
+      display: block;
+    }
+  }
+}
+
+.page-head-tabs {
+  background: $white;
+
+  > ul {
+    border-bottom: 0;
+  }
+
+  .tab {
+    position: relative;
+
+    .notification-container {
+      @include notification_container(1.5rem);
+      position: absolute;
+      right: 15px;
+      bottom: -5px;
+
+      .notification-counter {
+        @include notification_counter();
+        top: -1.75rem;
+        right: -0.9375rem;
+
+        &:empty {
+          border: none;
+        }
+
+        &:not(:empty) {
+          min-width: var(--#{$cdk}size-18);
+          height: var(--#{$cdk}size-18);
+          padding-inline: var(--#{$cdk}size-4);
+          line-height: 1;
+        }
+      }
+    }
+  }
+}
+
+.page-sidebar-closed:not(.mobile) {
+  .header-toolbar {
+    padding-left: var(--#{$cdk}sidebar-width-collapse);
+  }
+}

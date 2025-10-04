@@ -1,0 +1,58 @@
+- **.docker/** — Thư mục chứa các kịch bản và cấu hình hỗ trợ docker cho dự án (ví dụ script khởi chạy, helper).
+- **.editorconfig** — Tập tin cấu hình định dạng mã dùng chung (EditorConfig) để giữ style nhất quán.
+- **.env** — Tập tin môi trường hiện tại (có thể chứa biến môi trường khi chạy local; nếu có, cẩn trọng vì có thể chứa secrets).
+- **.env.dist** — Mẫu tập tin môi trường (mẫu .env) để cấu hình khi triển khai/phiên bản dev.
+- **.git/** — Thư mục metadata của Git (repo local); chứa lịch sử commit, config, v.v.
+- **.github/** — Thư mục chứa workflow và cấu hình GitHub (CI/CD, actions, templates).
+- **.gitignore** — Danh sách file/thư mục Git nên bỏ qua (không commit).
+- **.php-cs-fixer.dist.php** — Cấu hình cho PHP CS Fixer (định dạng/chuẩn hóa mã PHP).
+- **.t9n.yml** — Có thể là cấu hình cho công cụ/CI liên quan tới nội địa hóa (t9n = translation).
+- **admin-api/** — Thư mục cho phần API của khu vực quản trị (một entry-point, nội dung phục vụ API admin).
+- **admin-dev/** — Thư mục chứa mã/entry dành cho môi trường admin developer (phiên bản dành cho backend dev).
+- **app/** — Thư mục ứng dụng Symfony/PrestaShop (kernel, cấu hình, cache-related manifests cho app phía server).
+- **autoload.php** — Tập tin autoloader (kết nối autoload từ Composer hoặc tự định nghĩa).
+- **bin/** — Thư mục chứa các tập tin nhị phân/scripts runnable (ví dụ `console`).
+- **cache/** — Thư mục đệm cũ (có thể chứa cache legacy hoặc fallback; PrestaShop cũng có `var`).
+- **classes/** — Thư mục chứa các lớp PHP cốt lõi của PrestaShop (models, helpers, business logic).
+- **CODE_OF_CONDUCT.md** — Quy tắc ứng xử của cộng đồng dự án.
+- **composer.json** — Manifest PHP Composer (dependencies, autoload, scripts).
+- **composer.lock** — Khóa phiên bản các package PHP được cài bởi Composer.
+- **config/** — Thư mục chứa cấu hình ứng dụng (các file config YAML/PHP cho app).
+- **CONTRIBUTING.md** — Hướng dẫn đóng góp cho dự án (contribution guidelines).
+- **CONTRIBUTORS.md** — Danh sách đóng góp/những người tham gia dự án.
+- **controllers/** — Thư mục chứa controllers xử lý request trong PrestaShop (FO/BO controllers).
+- **docker-compose.mariadb.yml** — File docker-compose cấu hình dùng MariaDB (tập hợp dịch vụ cho môi trường dev/test).
+- **docker-compose.override.yml.dist** — Mẫu file override cho docker-compose (mặc định cho local).
+- **docker-compose.yml** — File docker-compose chính (định nghĩa các container, network, volumes cho dev).
+- **docs/** — Tài liệu dự án (hướng dẫn, kỹ thuật, design docs).
+- **download/** — Thư mục chứa script/entry phục vụ download file (ví dụ file tĩnh, module export).
+- **error500.html** — Trang HTML hiển thị khi lỗi server 500 (fallback error page).
+- **img/** — Thư mục chứa các ảnh tĩnh dùng ở core (logo, icons, v.v).
+- **index.php** — Entry point chính cho ứng dụng web (front controller).
+- **init.php** — Tập tin khởi tạo/bootstrapping (thiết lập môi trường khi load).
+- **install-dev/** — Thư mục chứa tài nguyên cho cài đặt ở môi trường dev (installer development).
+- **INSTALL.txt** — Hướng dẫn cài đặt phần mềm.
+- **js/** — Thư mục chứa mã JavaScript dùng bởi theme/core (client-side scripts).
+- **LICENSE.md** — Văn bản giấy phép (license) của dự án.
+- **localization/** — Thư mục liên quan tới nội địa hóa (packs, scripts, translation import/export).
+- **mails/** — Template email (HTML/TXT) được sử dụng để gửi email từ PrestaShop.
+- **Makefile** — Tập tin Make để chạy các tác vụ build/test/coding standards.
+- **modules/** — Thư mục chứa module (extensions) cài sẵn hoặc module core (một số có thể được tải động).
+- **override/** — Cơ chế override của PrestaShop (file override cho core classes/controllers để custom).
+- **package-lock.json** — Khóa phiên bản npm/yarn (liên quan tới phần JS của dự án).
+- **pdf/** — Thư mục chứa class/template liên quan tới PDF generation (hoá đơn, packing slips).
+- **phpstan-baseline.neon** — Baseline cấu hình cho PHPStan (để bỏ qua lỗi đã biết).
+- **phpstan-disallowed-calls.neon** — Cấu hình PHPStan cho các cuộc gọi hàm bị cấm.
+- **phpstan-tmp-legacy-layout-baseline.neon** — Baseline tạm thời cho PHPStan liên quan legacy layout.
+- **phpstan.neon.dist** — Cấu hình mẫu cho PHPStan (static analysis).
+- **README.md** — Mô tả dự án, hướng dẫn nhanh, thông tin quan trọng.
+- **rector.php** — Cấu hình cho Rector (tool refactor/upgrade tự động mã PHP).
+- **src/** — Thư mục chứa mã nguồn theo chuẩn PSR-4 (nếu dự án sử dụng file organization mới; PrestaShop có code legacy trong `classes` nhưng `src` cho kiến trúc hiện đại).
+- **tests/** — Bộ test (unit, integration, UI tests).
+- **themes/** — Thư mục theme (front-office themes, core theme, thư viện assets).
+- **tools/** — Các công cụ, script tiện ích cho dev/maintenance (migration, update scripts).
+- **translations/** — Các file dịch ngôn ngữ (CSV/XLF/TMX) hoặc bundles cho i18n.
+- **upload/** — Thư mục tạm cho upload file (có thể chứa files được upload qua UI).
+- **var/** — Thư mục chứa dữ liệu runtime (cache, logs, sessions, modules storage).
+- **vendor/** — Thư mục chứa dependencies được cài bởi Composer (thư viện bên thứ ba).
+- **webservice/** — Thư mục mã liên quan tới webservice (API) endpoint.

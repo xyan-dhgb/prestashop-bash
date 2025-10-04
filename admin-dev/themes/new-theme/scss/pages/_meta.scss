@@ -1,0 +1,9 @@
+@include media-breakpoint-down(xs) {
+  .adminmeta {
+    #seo-urls-showcase-card {
+      .btn {
+        margin-block: var(--#{$cdk}size-8);
+      }
+    }
+  }
+}

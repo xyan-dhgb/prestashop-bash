@@ -1,0 +1,234 @@
+// Import utils
+import testContext from '@utils/testContext';
+
+// Import commonTests
+import {bulkDeleteCustomersTest} from '@commonTests/BO/customers/customer';
+import {createOrderByGuestTest} from '@commonTests/FO/classic/order';
+
+import {
+  boDashboardPage,
+  boLoginPage,
+  boShoppingCartsPage,
+  type BrowserContext,
+  dataPaymentMethods,
+  dataProducts,
+  FakerAddress,
+  FakerCustomer,
+  FakerOrder,
+  type Page,
+  utilsCore,
+  utilsPlaywright,
+} from '@prestashop-core/ui-testing';
+
+import {expect} from 'chai';
+
+const baseContext: string = 'functional_BO_orders_shoppingCarts_sortAndPagination';
+
+/*
+Pre-condition:
+- Create 16 shopping carts by guest
+Scenario:
+- Pagination
+- Sort shopping cart table by Id, Order ID, Customer, carrier, date and Online
+Post-condition:
+- Delete customers
+*/
+describe('BO - Orders - Shopping carts : Sort and pagination shopping carts', async () => {
+  let browserContext: BrowserContext;
+  let page: Page;
+
+  const addressData: FakerAddress = new FakerAddress({country: 'France'});
+  const customerData: FakerCustomer = new FakerCustomer({password: '', lastName: 'guest'});
+  // New order by guest data
+  const orderByGuestData: FakerOrder = new FakerOrder({
+    customer: customerData,
+    products: [
+      {
+        product: dataProducts.demo_1,
+        quantity: 1,
+      },
+    ],
+    deliveryAddress: addressData,
+    paymentMethod: dataPaymentMethods.wirePayment,
+  });
+
+  // Pre-condition: Create 16 orders
+  describe('PRE-TEST: Create 16 orders by guest in FO', async () => {
+    const creationTests: number[] = new Array(16).fill(0, 0, 16);
+    creationTests.forEach((value: number, index: number) => {
+      createOrderByGuestTest(orderByGuestData, `${baseContext}_preTest_${index}`);
+    });
+  });
+
+  // before and after functions
+  before(async function () {
+    browserContext = await utilsPlaywright.createBrowserContext(this.browser);
+    page = await utilsPlaywright.newTab(browserContext);
+  });
+
+  after(async () => {
+    await utilsPlaywright.closeBrowserContext(browserContext);
+  });
+
+  // 1 - Pagination
+  describe('Pagination next and previous', async () => {
+    it('should login in BO', async function () {
+      await testContext.addContextItem(this, 'testIdentifier', 'loginBO', baseContext);
+
+      await boLoginPage.goTo(page, global.BO.URL);
+      await boLoginPage.successLogin(page, global.BO.EMAIL, global.BO.PASSWD);
+
+      const pageTitle = await boDashboardPage.getPageTitle(page);
+      expect(pageTitle).to.contains(boDashboardPage.pageTitle);
+    });
+
+    it('should go to \'Orders > Shopping carts\' page', async function () {
+      await testContext.addContextItem(this, 'testIdentifier', 'goToShoppingCartsPage', baseContext);
+
+      await boDashboardPage.goToSubMenu(
+        page,
+        boDashboardPage.ordersParentLink,
+        boDashboardPage.shoppingCartsLink,
+      );
+
+      const pageTitle = await boShoppingCartsPage.getPageTitle(page);
+      expect(pageTitle).to.contains(boShoppingCartsPage.pageTitle);
+    });
+
+    it('should change the items number to 20 per page', async function () {
+      await testContext.addContextItem(this, 'testIdentifier', 'changeItemNumberTo20', baseContext);
+
+      const paginationNumber = await boShoppingCartsPage.selectPaginationLimit(page, 20);
+      expect(paginationNumber).to.contains('(page 1 / 2)');
+    });
+
+    it('should click on next', async function () {
+      await testContext.addContextItem(this, 'testIdentifier', 'clickOnNext', baseContext);
+
+      const paginationNumber = await boShoppingCartsPage.paginationNext(page);
+      expect(paginationNumber).to.contains('(page 2 / 2)');
+    });
+
+    it('should click on previous', async function () {
+      await testContext.addContextItem(this, 'testIdentifier', 'clickOnPrevious', baseContext);
+
+      const paginationNumber = await boShoppingCartsPage.paginationPrevious(page);
+      expect(paginationNumber).to.contains('(page 1 / 2)');
+    });
+
+    it('should change the items number to 300 per page', async function () {
+      await testContext.addContextItem(this, 'testIdentifier', 'changeItemNumberTo300', baseContext);
+
+      const paginationNumber = await boShoppingCartsPage.selectPaginationLimit(page, 100);
+      expect(paginationNumber).to.contains('(page 1 / 1)');
+    });
+  });
+
+  // 2 - Sort shopping cart table
+  describe('Sort shopping cart table', async () => {
+    it('should filter by customer lastName start by \'guest\'', async function () {
+      await testContext.addContextItem(this, 'testIdentifier', 'filterToSort', baseContext);
+
+      await boShoppingCartsPage.filterTable(page, 'input', 'customer_name', 'guest');
+
+      const textColumn = await boShoppingCartsPage.getTextColumn(page, 1, 'customer_name');
+      expect(textColumn).to.contains(customerData.lastName);
+    });
+
+    const sortTests = [
+      {
+        args: {
+          testIdentifier: 'sortByIdDesc', sortBy: 'id_cart', sortDirection: 'desc', isFloat: true,
+        },
+      },
+      {
+        args: {
+          testIdentifier: 'sortByOrderIDAsc', sortBy: 'status', sortDirection: 'asc', isFloat: true,
+        },
+      },
+      {
+        args: {
+          testIdentifier: 'sortByOrderIDDesc', sortBy: 'status', sortDirection: 'desc', isFloat: true,
+        },
+      },
+      {
+        args: {
+          testIdentifier: 'sortByCarrierAsc', sortBy: 'carrier_name', sortDirection: 'asc',
+        },
+      },
+      {
+        args: {
+          testIdentifier: 'sortByCarrierDesc', sortBy: 'carrier_name', sortDirection: 'desc',
+        },
+      },
+      {
+        args: {
+          testIdentifier: 'sortByDateAsc', sortBy: 'date_add', sortDirection: 'asc',
+        },
+      },
+      {
+        args: {
+          testIdentifier: 'sortByDateDesc', sortBy: 'date_add', sortDirection: 'desc',
+        },
+      },
+      {
+        args: {
+          testIdentifier: 'sortByOnlineAsc', sortBy: 'customer_online', sortDirection: 'asc',
+        },
+      },
+      {
+        args: {
+          testIdentifier: 'sortByOnlineDesc', sortBy: 'customer_online', sortDirection: 'desc',
+        },
+      },
+      {
+        args: {
+          testIdentifier: 'sortByIdAsc', sortBy: 'id_cart', sortDirection: 'asc', isFloat: true,
+        },
+      },
+    ];
+
+    sortTests.forEach((test) => {
+      it(`should sort by '${test.args.sortBy}' '${test.args.sortDirection}' and check result`, async function () {
+        await testContext.addContextItem(this, 'testIdentifier', test.args.testIdentifier, baseContext);
+
+        const nonSortedTable = await boShoppingCartsPage.getAllRowsColumnContent(page, test.args.sortBy);
+
+        await boShoppingCartsPage.sortTable(page, test.args.sortBy, test.args.sortDirection);
+
+        const sortedTable = await boShoppingCartsPage.getAllRowsColumnContent(page, test.args.sortBy);
+
+        if (test.args.isFloat) {
+          const nonSortedTableFloat: number[] = nonSortedTable.map((text:string): number => parseFloat(text));
+          const sortedTableFloat: number[] = sortedTable.map((text:string): number => parseFloat(text));
+
+          const expectedResult = await utilsCore.sortArrayNumber(nonSortedTableFloat);
+
+          if (test.args.sortDirection === 'asc') {
+            expect(sortedTableFloat).to.deep.equal(expectedResult);
+          } else {
+            expect(sortedTableFloat).to.deep.equal(expectedResult.reverse());
+          }
+        } else {
+          const expectedResult: string[] = await utilsCore.sortArray(nonSortedTable);
+
+          if (test.args.sortDirection === 'asc') {
+            expect(sortedTable).to.deep.equal(expectedResult);
+          } else {
+            expect(sortedTable).to.deep.equal(expectedResult.reverse());
+          }
+        }
+      });
+    });
+
+    it('should reset all filters', async function () {
+      await testContext.addContextItem(this, 'testIdentifier', 'resetAfterSort', baseContext);
+
+      const numberOfShoppingCartsAfterReset = await boShoppingCartsPage.resetAndGetNumberOfLines(page);
+      expect(numberOfShoppingCartsAfterReset).to.be.above(1);
+    });
+  });
+
+  // Post-condition: Delete created guest customers by bulk action
+  bulkDeleteCustomersTest('email', customerData.email, `${baseContext}_postTest_1`);
+});

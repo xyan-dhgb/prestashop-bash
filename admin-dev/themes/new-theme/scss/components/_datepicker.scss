@@ -1,0 +1,58 @@
+.bootstrap-datetimepicker-widget {
+  .prev span::before,
+  .next span::before,
+  .up::before,
+  .down::before,
+  .date::before,
+  .time::before {
+    font-family: var(--#{$cdk}font-family-material-icons);
+  }
+
+  .prev span::before {
+    content: "\E314";
+  }
+
+  .next span::before {
+    content: "\E315";
+  }
+
+  .up::before {
+    content: "\E316";
+  }
+
+  .down::before {
+    content: "\E313";
+  }
+
+  .date::before {
+    content: "\E916";
+  }
+
+  .time::before {
+    content: "\E192";
+  }
+
+  table {
+    td {
+      &.today {
+        &::before {
+          border-bottom-color: var(--#{$cdk}blue-500);
+        }
+      }
+
+      &.active {
+        background-color: var(--#{$cdk}blue-500);
+
+        &:hover {
+          background-color: var(--#{$cdk}blue-500);
+        }
+      }
+
+      span {
+        &.active {
+          background-color: var(--#{$cdk}blue-300);
+        }
+      }
+    }
+  }
+}
