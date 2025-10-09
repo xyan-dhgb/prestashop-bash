@@ -22,9 +22,14 @@ deploy_prestashop() {
     sudo systemctl enable apache2 mysql
     sudo systemctl start apache2 mysql
 
+    # Ensure WEB_ROOT exists
+    if [ ! -d "$WEB_ROOT" ]; then
+        sudo mkdir -p "$WEB_ROOT"
+    fi
+
     # Download and extract PrestaShop
     wget https://download.prestashop.com/download/releases/prestashop_1.7.8.9.zip -O /tmp/prestashop.zip
-    sudo unzip /tmp/prestashop.zip -d $WEB_ROOT
+    sudo unzip -o /tmp/prestashop.zip -d $WEB_ROOT
     sudo chown -R www-data:www-data $WEB_ROOT
     echo "PrestaShop files deployed to $WEB_ROOT"
 }
@@ -34,7 +39,7 @@ analyze_website() {
     echo "Total files: $(find $WEB_ROOT -type f | wc -l)"
     echo "Total directories: $(find $WEB_ROOT -type d | wc -l)"
     echo "File type distribution (count and total size):"
-    find $WEB_ROOT -type f | sed 's/.*\.//' | sort | uniq | while read ext; do
+    find $WEB_ROOT -type f -name "*.*" | sed 's/.*\.//' | sort | uniq | while read ext; do
         count=$(find $WEB_ROOT -type f -name "*.$ext" | wc -l)
         size=$(find $WEB_ROOT -type f -name "*.$ext" -exec du -cb {} + | grep total$ | awk '{print $1}')
         echo "$ext: $count files, $size bytes"
@@ -45,15 +50,19 @@ analyze_website() {
 full_backup() {
     mkdir -p $BACKUP_DIR
     tar czf $BACKUP_DIR/full_backup_$(date +%F).tar.gz -C $WEB_ROOT .
-    echo "Full backup completed."
+    echo "Full backup completed: $BACKUP_DIR/full_backup_$(date +%F).tar.gz"
 }
 
 # 3b. Incremental Backup and S3 Sync
 incremental_backup() {
     mkdir -p $BACKUP_DIR
     tar --listed-incremental=$INCREMENTAL_FILE -czf $BACKUP_DIR/incremental_backup_$(date +%F).tar.gz -C $WEB_ROOT .
-    echo "Incremental backup completed."
+    echo "Incremental backup completed: $BACKUP_DIR/incremental_backup_$(date +%F).tar.gz"
     # Sync to S3 (requires awscli and configured credentials)
+    if ! command -v aws >/dev/null 2>&1; then
+        echo "awscli not found. Please install and configure awscli to sync with S3."
+        return 1
+    fi
     aws s3 cp $BACKUP_DIR/incremental_backup_$(date +%F).tar.gz $S3_BUCKET/
     echo "Backup synced to S3."
 }
